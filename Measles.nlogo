@@ -37,7 +37,7 @@ to setup-turtles
       get-healthy ]
   ask n-of 10 turtles
     [ get-sick ]
-  ask n-of (number-people/100*population-immunised)
+  ask n-of (number-people / 100 * population-immunised) turtles
     [ become-immune ]
 end
 
@@ -48,14 +48,12 @@ end
 
 to get-healthy ;; turtle procedure
   set sick? false
-  set remaining-immunity 0 ;;TODO change to set immunity percentage 100
   set sick-time 0
 end
 
 to become-immune ;; turtle procedure
   set sick? false
   set sick-time 0
-  ;;set remaining-immunity immunity-duration ;;TODO set to percentage
   set immunity-percentage 100
 end
 
@@ -112,7 +110,7 @@ end
 ;; Immune turtles don't get sick.
 to infect ;; turtle procedure
   ask other turtles-here with [ not sick? and not immune? ]
-    [ if random-float 100 > immunity-percentage
+    [ if 100 > immunity-percentage ;;removed random-float 100 for just 100 as we use the immunity percentage is our chance to contract
       [ get-sick ] ]
 end
 
@@ -341,7 +339,7 @@ population-immunised
 population-immunised
 0
 100
-59.0
+28.0
 1
 1
 %
