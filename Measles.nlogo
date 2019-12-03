@@ -13,6 +13,7 @@ globals
     chance-reproduce     ;; the probability of a turtle generating an offspring each tick
     carrying-capacity    ;; the number of turtles that can be in the world at one time
     immunity-duration    ;; how many weeks immunity lasts
+    moved-on             ;; how many turtles have left this population
     ]
 
 ;; The setup is divided into four procedures
@@ -74,6 +75,7 @@ to go
     move
     if sick? [ recover-or-die ]
     ifelse sick? [ infect ] [ reproduce ]
+    move-on
   ]
   update-global-variables
   update-display
@@ -109,6 +111,18 @@ to move ;; turtle procedure
   fd 1
 end
 
+;; Turtles leave the population (move on to another area/population)
+to move-on
+  let %t (0.005 )
+  let n count turtles
+  ask (n-of (%t * n)  turtles) [ leave ]
+end
+
+to leave
+  set moved-on moved-on + 1
+  die
+end
+
 ;; If a turtle is sick, it infects other turtles on the same patch.
 ;; Immune turtles don't get sick.
 to infect ;; turtle procedure
@@ -133,7 +147,9 @@ to reproduce
     [ hatch 1
       [ set age random-float (50 * 52) ;; 50 years
         lt 45 fd 1
-        get-healthy ] ]
+        ifelse random-float 100 < population-immunised
+          [become-immune]
+          [set color green] ] ]
 end
 
 to-report immune?
@@ -199,7 +215,7 @@ chance-recover
 chance-recover
 0.0
 99.0
-99.0
+17.0
 1.0
 1
 %
@@ -343,11 +359,37 @@ population-immunised
 population-immunised
 0
 100
-0.0
+59.0
 1
 1
 %
 HORIZONTAL
+
+SLIDER
+50
+290
+222
+323
+rate-of-movement
+rate-of-movement
+0
+10
+5.0
+1
+1
+%
+HORIZONTAL
+
+MONITOR
+295
+515
+362
+560
+moved-on
+moved-on
+1
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
