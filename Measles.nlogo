@@ -3,6 +3,7 @@ turtles-own
     remaining-immunity   ;; how many weeks of immunity the turtle has left
     sick-time            ;; how long, in weeks, the turtle has been infectious
     age                  ;; how many weeks old the turtle is
+    had-measles?          ;; people immune via contraction not vaccination
     immunity-percentage ];; the percentage immune a turtle is
 
 globals
@@ -30,9 +31,10 @@ to setup-turtles
   create-turtles number-people
     [ setxy random-xcor random-ycor
       set age random lifespan
+      set had-measles? false
       set sick-time 0
       set remaining-immunity 0
-      set immunity-percentage 10 ;; TODO replace with actual natural immunity percentage
+      set immunity-percentage 0 ;; TODO replace with actual natural immunity percentage
       set size 1  ;; easier to see
       get-healthy ]
   ask n-of 10 turtles
@@ -44,6 +46,7 @@ end
 to get-sick ;; turtle procedure
   set sick? true
   set remaining-immunity 0
+  set had-measles? true
 end
 
 to get-healthy ;; turtle procedure
@@ -60,7 +63,7 @@ end
 ;; This sets up basic constants of the model.
 to setup-constants
   set lifespan 50 * 52      ;; 50 times 52 weeks = 50 years = 2600 weeks old
-  set carrying-capacity 300  ;; total population count
+  set carrying-capacity 1000  ;; total population count
   set chance-reproduce 1
   set immunity-duration 1 ;;TODO replace with an immunity percentage
 end
@@ -86,7 +89,7 @@ end
 to update-display
   ask turtles
     [ if shape != turtle-shape [ set shape turtle-shape ]
-      set color ifelse-value sick? [ red ] [ ifelse-value immune? [ grey ] [ green ] ] ]
+      set color ifelse-value sick? [ red ] [ ifelse-value had-measles? [ brown ] [ ifelse-value immune? [grey] [green ] ] ]]
 end
 
 ;;Turtle counting variables are advanced.
@@ -128,7 +131,7 @@ end
 to reproduce
   if count turtles < carrying-capacity and random-float 100 < chance-reproduce
     [ hatch 1
-      [ set age 1
+      [ set age random-float (50 * 52) ;; 50 years
         lt 45 fd 1
         get-healthy ] ]
 end
@@ -181,7 +184,7 @@ duration
 duration
 0.0
 99.0
-20.0
+8.0
 1.0
 1
 weeks
@@ -196,7 +199,7 @@ chance-recover
 chance-recover
 0.0
 99.0
-75.0
+99.0
 1.0
 1
 %
@@ -269,7 +272,8 @@ true
 PENS
 "sick" 1.0 0 -2674135 true "" "plot count turtles with [ sick? ]"
 "immune" 1.0 0 -7500403 true "" "plot count turtles with [ immune? ]"
-"healthy" 1.0 0 -10899396 true "" "plot count turtles with [ not sick? and not immune? ]"
+"susceptible" 1.0 0 -10899396 true "" "plot count turtles with [ not sick? and not immune? ]"
+"had-measles" 1.0 0 -6459832 true "" "plot count turtles with [ had-measles? ]"
 "total" 1.0 0 -13345367 true "" "plot count turtles"
 
 SLIDER
@@ -281,7 +285,7 @@ number-people
 number-people
 10
 carrying-capacity
-150.0
+1000.0
 1
 1
 NIL
@@ -339,7 +343,7 @@ population-immunised
 population-immunised
 0
 100
-28.0
+0.0
 1
 1
 %
