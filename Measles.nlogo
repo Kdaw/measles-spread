@@ -58,7 +58,7 @@ end
 to become-immune ;; turtle procedure
   set sick? false
   set sick-time 0
-  set immunity-percentage 100
+  set immunity-percentage 90
 end
 
 ;; This sets up basic constants of the model.
@@ -75,8 +75,8 @@ to go
     move
     if sick? [ recover-or-die ]
     ifelse sick? [ infect ] [ reproduce ]
-    move-on
   ]
+  move-on
   update-global-variables
   update-display
   tick
@@ -129,6 +129,9 @@ to infect ;; turtle procedure
   ask other turtles-here with [ not sick? and not immune? ]
     [ if 100 > immunity-percentage ;;removed random-float 100 for just 100 as we use the immunity percentage is our chance to contract
       [ get-sick ] ]
+  ask other turtles in-radius 2
+    [if 65 > immunity-percentage
+      [ get-sick ]]
 end
 
 ;; Once the turtle has been sick long enough, it
@@ -165,9 +168,9 @@ end
 ; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
-280
+285
 10
-778
+783
 509
 -1
 -1
@@ -215,7 +218,7 @@ chance-recover
 chance-recover
 0.0
 99.0
-17.0
+99.0
 1.0
 1
 %
@@ -271,10 +274,10 @@ NIL
 0
 
 PLOT
-15
-375
-267
-539
+790
+55
+1270
+420
 Populations
 weeks
 people
@@ -308,10 +311,10 @@ NIL
 HORIZONTAL
 
 MONITOR
-28
-328
-103
-373
+30
+330
+105
+375
 NIL
 %infected
 1
@@ -320,9 +323,9 @@ NIL
 
 MONITOR
 105
-328
+330
 179
-373
+375
 NIL
 %immune
 1
@@ -330,10 +333,10 @@ NIL
 11
 
 MONITOR
-181
-329
-255
-374
+105
+380
+179
+425
 years
 ticks / 52
 1
@@ -359,7 +362,7 @@ population-immunised
 population-immunised
 0
 100
-59.0
+68.0
 1
 1
 %
@@ -374,17 +377,17 @@ rate-of-movement
 rate-of-movement
 0
 10
-5.0
+3.0
 1
 1
 %
 HORIZONTAL
 
 MONITOR
-295
-515
-362
-560
+30
+380
+105
+425
 moved-on
 moved-on
 1
