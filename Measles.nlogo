@@ -47,7 +47,6 @@ end
 to get-sick ;; turtle procedure
   set sick? true
   set remaining-immunity 0
-  set had-measles? true
 end
 
 to get-healthy ;; turtle procedure
@@ -139,8 +138,10 @@ end
 to recover-or-die ;; turtle procedure
   if sick-time > duration                        ;; If the turtle has survived past the virus' duration, then
     [ ifelse random-float 100 < chance-recover   ;; either recover or die
-      [ become-immune ]
-      [ die ] ]
+      [ become-immune
+        set had-measles? true]
+      [ set had-measles? true   ;; needs setting before the turtle is killed as after deathe it can no longer effect the totals.
+        die ] ]
 end
 
 ;; If there are less turtles than the carrying-capacity
@@ -219,21 +220,6 @@ chance-recover
 0.0
 99.0
 99.0
-1.0
-1
-%
-HORIZONTAL
-
-SLIDER
-40
-87
-234
-120
-infectiousness
-infectiousness
-0.0
-99.0
-65.0
 1.0
 1
 %
@@ -362,7 +348,7 @@ population-immunised
 population-immunised
 0
 100
-68.0
+43.0
 1
 1
 %
